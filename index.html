@@ -1,1842 +1,732 @@
-<div class="success-message" id="successMessage">
-                        ¡Gracias por suscribirte! Pronto recibirás las mejores ofertas en tu email.
-                    </div>
-                </div>
-            </section>
-        </div>
-    </main>
-
-    <!-- Modal de comparación -->
-    <div class="modal" id="comparisonModal">
-        <div class="modal-content">
-            <button class="modal-close" onclick="closeModal()">&times;</button>
-            <h2>Comparación Detallada</h2>
-            <div id="comparisonContent">
-                <!-- Contenido dinámico de comparación -->
-            </div>
-        </div>
-    </div>
-
-    <footer id="footer">
-        <div class="container">
-            <div class="footer-content">
-                <div class="footer-section">
-                    <h4>TechCompare</h4>
-                    <a onclick="showModal('about')">Acerca de nosotros</a>
-                    <a onclick="showModal('methodology')">Metodología</a>
-                    <a onclick="showModal('contact')">Contacto</a>
-                </div>
-                <div class="footer-section">
-                    <h4>Categorías</h4>
-                    <a onclick="filterByCategory('smartphone')">Smartphones</a>
-                    <a onclick="filterByCategory('laptop')">Laptops</a>
-                    <a onclick="filterByCategory('headphones')">Auriculares</a>
-                    <a onclick="filterByCategory('smartwatch')">Smartwatches</a>
-                </div>
-                <div class="footer-section">
-                    <h4>Recursos</h4>
-                    <a onclick="scrollToSection('blog-section')">Blog</a>
-                    <a onclick="showModal('guides')">Guías de compra</a>
-                    <a onclick="showModal('reviews')">Reviews</a>
-                    <a onclick="scrollToSection('newsletter')">Newsletter</a>
-                </div>
-                <div class="footer-section">
-                    <h4>Legal</h4>
-                    <a onclick="showModal('privacy')">Política de privacidad</a>
-                    <a onclick="showModal('terms')">Términos de uso</a>
-                    <a onclick="showModal('affiliates')">Divulgación de afiliados</a>
-                </div>
-            </div>
-            <p>&copy; 2025 TechCompare. Todos los derechos reservados.</p>
-        </div>
-    </footer>
-
-    <script>
-        // DATOS INICIALES
-        const products = [
-            {
-                id: 1,
-                name: "iPhone 15 Pro",
-                category: "smartphone",
-                price: 999,
-                originalPrice: 1199,
-                image: "https://m.media-amazon.com/images/I/81Os1SDWpbL._AC_SX679_.jpg",
-                rating: 4.8,
-                reviews: 2847,
-                features: {
-                    "Pantalla": "6.1\" OLED",
-                    "Almacenamiento": "128GB",
-                    "Cámara": "48MP Triple",
-                    "Batería": "3274mAh",
-                    "Procesador": "A17 Pro"
-                },
-                pros: ["Excelente cámara", "Rendimiento superior", "Construcción premium"],
-                cons: ["Precio elevado", "Sin cargador incluido"],
-                bestChoice: true,
-                affiliateUrl: "https://amazon.com/iphone15pro"
-            },
-            {
-                id: 2,
-                name: "Samsung Galaxy S24 Ultra",
-                category: "smartphone",
-                price: 849,
-                originalPrice: 999,
-                image: "https://m.media-amazon.com/images/I/71Fg3oAJdlL._AC_SX679_.jpg",
-                rating: 4.7,
-                reviews: 1923,
-                features: {
-                    "Pantalla": "6.8\" AMOLED",
-                    "Almacenamiento": "256GB",
-                    "Cámara": "200MP Quad",
-                    "Batería": "5000mAh",
-                    "Procesador": "Snapdragon 8 Gen 3"
-                },
-                pros: ["Batería excelente", "S Pen incluido", "Pantalla gigante"],
-                cons: ["Muy grande", "Software pesado"],
-                bestChoice: false,
-                affiliateUrl: "https://amazon.com/galaxy-s24-ultra"
-            },
-            {
-                id: 3,
-                name: "Google Pixel 8 Pro",
-                category: "smartphone",
-                price: 699,
-                originalPrice: 799,
-                image: "https://m.media-amazon.com/images/I/71FuI8YvCNL._AC_SX679_.jpg",
-                rating: 4.6,
-                reviews: 1456,
-                features: {
-                    "Pantalla": "6.7\" OLED",
-                    "Almacenamiento": "128GB",
-                    "Cámara": "50MP Triple",
-                    "Batería": "5050mAh",
-                    "Procesador": "Google Tensor G3"
-                },
-                pros: ["IA avanzada", "Fotos nocturnas", "Android puro"],
-                cons: ["Menos almacenamiento", "Procesador menos potente"],
-                bestChoice: false,
-                affiliateUrl: "https://amazon.com/pixel-8-pro"
-            },
-            {
-                id: 4,
-                name: "MacBook Air M3",
-                category: "laptop",
-                price: 1299,
-                originalPrice: 1499,
-                image: "https://m.media-amazon.com/images/I/71f5Eu5lJSL._AC_SX679_.jpg",
-                rating: 4.9,
-                reviews: 3421,
-                features: {
-                    "Pantalla": "13.6\" Liquid Retina",
-                    "Procesador": "Apple M3",
-                    "RAM": "16GB",
-                    "Almacenamiento": "512GB SSD",
-                    "Batería": "18 horas"
-                },
-                pros: ["Rendimiento excepcional", "Batería todo el día", "Ultraligero"],
-                cons: ["Solo 2 puertos", "Precio premium"],
-                bestChoice: true,
-                affiliateUrl: "https://amazon.com/macbook-air-m3"
-            },
-            {
-                id: 5,
-                name: "Dell XPS 13 Plus",
-                category: "laptop",
-                price: 1099,
-                originalPrice: 1299,
-                image: "https://m.media-amazon.com/images/I/61NBcKCCNGL._AC_SX679_.jpg",
-                rating: 4.5,
-                reviews: 987,
-                features: {
-                    "Pantalla": "13.4\" InfinityEdge",
-                    "Procesador": "Intel Core i7-13700H",
-                    "RAM": "16GB",
-                    "Almacenamiento": "512GB SSD",
-                    "Batería": "12 horas"
-                },
-                pros: ["Diseño elegante", "Pantalla increíble", "Teclado táctil"],
-                cons: ["Conectividad limitada", "Ventiladores ruidosos"],
-                bestChoice: false,
-                affiliateUrl: "https://amazon.com/dell-xps-13-plus"
-            },
-            {
-                id: 6,
-                name: "AirPods Pro 2",
-                category: "headphones",
-                price: 199,
-                originalPrice: 249,
-                image: "https://m.media-amazon.com/images/I/61SUj2aKoEL._AC_SX679_.jpg",
-                rating: 4.7,
-                reviews: 5632,
-                features: {
-                    "Cancelación": "Activa adaptativa",
-                    "Batería": "6h + 24h estuche",
-                    "Conectividad": "Bluetooth 5.3",
-                    "Resistencia": "IPX4",
-                    "Audio": "Audio Espacial"
-                },
-                pros: ["Excelente cancelación", "Sonido inmersivo", "Carga inalámbrica"],
-                cons: ["Solo para iOS", "Precio alto"],
-                bestChoice: true,
-                affiliateUrl: "https://amazon.com/airpods-pro-2"
-            },
-            {
-                id: 7,
-                name: "Sony WH-1000XM5",
-                category: "headphones",
-                price: 299,
-                originalPrice: 399,
-                image: "https://m.media-amazon.com/images/I/51QeS0jrWlL._AC_SX679_.jpg",
-                rating: 4.8,
-                reviews: 2134,
-                features: {
-                    "Cancelación": "Líder del mercado",
-                    "Batería": "30 horas",
-                    "Conectividad": "Bluetooth 5.2",
-                    "Peso": "250g",
-                    "Audio": "Hi-Res Audio"
-                },
-                pros: ["Mejor cancelación", "Batería increíble", "Comodidad superior"],
-                cons: ["No se pliegan", "App compleja"],
-                bestChoice: false,
-                affiliateUrl: "https://amazon.com/sony-wh-1000xm5"
-            },
-            {
-                id: 8,
-                name: "Apple Watch Series 9",
-                category: "smartwatch",
-                price: 329,
-                originalPrice: 399,
-                image: "https://m.media-amazon.com/images/I/71HCCcGNJXL._AC_SX679_.jpg",
-                rating: 4.6,
-                reviews: 4123,
-                features: {
-                    "Pantalla": "45mm Retina",
-                    "Procesador": "S9 SiP",
-                    "Batería": "18 horas",
-                    "Sensores": "ECG, SpO2, Temperatura",
-                    "Resistencia": "50m agua"
-                },
-                pros: ["Ecosistema Apple", "Salud avanzada", "Apps nativas"],
-                cons: ["Solo iOS", "Batería limitada"],
-                bestChoice: true,
-                affiliateUrl: "https://amazon.com/apple-watch-series-9"
-            }
-        ];
-
-        const blogPosts = [
-            {
-                id: 1,
-                title: "iPhone 15 Pro vs Samsung S24 Ultra: ¿Cuál elegir en 2025?",
-                excerpt: "Comparativa exhaustiva entre los dos flagships más esperados del año. Analizamos cámara, rendimiento, batería y valor por dinero.",
-                image: "https://m.media-amazon.com/images/I/81Os1SDWpbL._AC_SX300_SY300_.jpg",
-                date: "15 Jun 2025",
-                tags: ["Smartphones", "Comparativa", "Apple", "Samsung"],
-                readTime: "8 min"
-            },
-            {
-                id: 2,
-                title: "Los mejores laptops para trabajo remoto en 2025",
-                excerpt: "Guía completa para elegir el laptop perfecto para trabajar desde casa. Incluye opciones para todos los presupuestos.",
-                image: "https://m.media-amazon.com/images/I/71f5Eu5lJSL._AC_SX300_SY300_.jpg",
-                date: "12 Jun 2025",
-                tags: ["Laptops", "Trabajo", "Productividad"],
-                readTime: "10 min"
-            },
-            {
-                id: 3,
-                title: "AirPods Pro 2 vs Sony WH-1000XM5: Batalla de gigantes",
-                excerpt: "Enfrentamos los auriculares más populares del mercado. Cancelación de ruido, calidad de sonido y comodidad en análisis.",
-                image: "https://m.media-amazon.com/images/I/61SUj2aKoEL._AC_SX300_SY300_.jpg",
-                date: "10 Jun 2025",
-                tags: ["Auriculares", "Audio", "Review"],
-                readTime: "6 min"
-            },
-            {
-                id: 4,
-                title: "Smartwatches 2025: ¿Vale la pena la inversión?",
-                excerpt: "Análisis del mercado actual de smartwatches. Comparamos funciones de salud, batería y ecosistemas disponibles.",
-                image: "https://m.media-amazon.com/images/I/71HCCcGNJXL._AC_SX300_SY300_.jpg",
-                date: "8 Jun 2025",
-                tags: ["Smartwatch", "Salud", "Tecnología"],
-                readTime: "7 min"
-            }
-        ];
-
-        // VARIABLES GLOBALES
-        let currentProducts = [...products];
-        let subscriberCount = 15847;
-        let comparedProducts = [];
-
-        // FUNCIONES PRINCIPALES
-        function generateStars(rating) {
-            const fullStars = Math.floor(rating);
-            const hasHalfStar = rating % 1 !== 0;
-            let stars = '★'.repeat(fullStars);
-            if (hasHalfStar) stars += '☆';
-            return stars;
-        }
-
-        function createProductCard(product) {
-            const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
-            const emojiMap = {
-                'smartphone': '📱',
-                'laptop': '💻',
-                'headphones': '🎧',
-                'smartwatch': '⌚'
-            };
-
-            return `
-                <div class="product-card" data-category="${product.category}" data-name="${product.name.toLowerCase()}" data-price="${product.price}" data-rating="${product.rating}">
-                    ${product.bestChoice ? '<div class="best-choice">Mejor Opción</div>' : ''}
-                    <div class="product-image">
-                        <img src="${product.image}" alt="${product.name}" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerHTML='${emojiMap[product.category] || '📦'}';">
-                    </div>
-                    <h3 class="product-title">${product.name}</h3>
-                    <div class="product-price">
-                        ${product.price}
-                        <span class="original-price">${product.originalPrice}</span>
-                        <span class="discount">-${discount}%</span>
-                    </div>
-                    <div class="product-rating">
-                        <span class="stars">${generateStars(product.rating)}</span>
-                        <span class="rating-text">${product.rating} (${product.reviews.toLocaleString()} reviews)</span>
-                    </div>
-                    <ul class="product-features">
-                        ${Object.entries(product.features).map(([key, value]) => 
-                            `<li><span class="feature-name">${key}</span><span class="feature-value">${value}</span></li>`
-                        ).join('')}
-                    </ul>
-                    <div class="pros-cons">
-                        <div class="pros">
-                            <h5>✓ Ventajas</h5>
-                            <ul>
-                                ${product.pros.map(pro => `<li>${pro}</li>`).join('')}
-                            </ul>
-                        </div>
-                        <div class="cons">
-                            <h5>✗ Desventajas</h5>
-                            <ul>
-                                ${product.cons.map(con => `<li>${con}</li>`).join('')}
-                            </ul>
-                        </div>
-                    </div>
-                    <button class="affiliate-button" onclick="trackPurchase('${product.name}', ${product.price}, '${product.affiliateUrl}')">
-                        Ver Mejor Oferta 🛒
-                    </button>
-                    <button class="compare-button" onclick="addToComparison(${product.id})">
-                        Comparar Producto
-                    </button>
-                </div>
-            `;
-        }
-
-        function createBlogCard(post) {
-            return `
-                <article class="blog-card" onclick="openBlogPost(${post.id})">
-                    <div class="blog-image">
-                        <img src="${post.image}" alt="${post.title}" loading="lazy" onerror="this.style.display='none'; this.parentElement.innerHTML='📰';">
-                    </div>
-                    <div class="blog-content">
-                        <div class="blog-date">${post.date} • ${post.readTime}</div>
-                        <h3 class="blog-title">${post.title}</h3>
-                        <p class="blog-excerpt">${post.excerpt}</p>
-                        <div class="blog-tags">
-                            ${post.tags.map(tag => `<span class="tag">${tag}</span>`).join('')}
-                        </div>
-                        <a href="#" class="read-more" onclick="event.stopPropagation(); openBlogPost(${post.id})">Leer más →</a>
-                    </div>
-                </article>
-            `;
-        }
-
-        function loadProducts() {
-            const grid = document.getElementById('productsGrid');
-            if (!grid) return;
-            
-            grid.innerHTML = '';
-            currentProducts.forEach(product => {
-                grid.innerHTML += createProductCard(product);
-            });
-            
-            console.log('✅ Products loaded:', currentProducts.length);
-        }
-
-        function loadBlogPosts() {
-            const grid = document.getElementById('blogGrid');
-            if (!grid) return;
-            
-            grid.innerHTML = '';
-            blogPosts.forEach(post => {
-                grid.innerHTML += createBlogCard(post);
-            });
-            
-            console.log('✅ Blog posts loaded:', blogPosts.length);
-        }
-
-        // FUNCIONES DE NAVEGACIÓN
-        function scrollToSection(sectionId) {
-            const element = document.getElementById(sectionId);
-            if (element) {
-                element.scrollIntoView({ behavior: 'smooth', block: 'start' });
-            }
-        }
-
-        function scrollToTop() {
-            window.scrollTo({ top: 0, behavior: 'smooth' });
-        }
-
-        function toggleMenu() {
-            const menu = document.getElementById('mobileMenu');
-            if (menu) {
-                menu.classList.toggle('active');
-            }
-        }
-
-        // FUNCIONES DE FILTRADO Y BÚSQUEDA
-        function filterProducts() {
-            const searchBox = document.getElementById('searchBox');
-            const categoryFilter = document.getElementById('categoryFilter');
-            
-            if (!searchBox || !categoryFilter) return;
-            
-            const searchTerm = searchBox.value.toLowerCase();
-            const categoryFilterValue = categoryFilter.value;
-            const cards = document.querySelectorAll('.product-card');
-            
-            // Filtrar array de productos
-            currentProducts = products.filter(product => {
-                const matchesSearch = product.name.toLowerCase().includes(searchTerm) ||
-                                    Object.values(product.features).some(feature => 
-                                        feature.toString().toLowerCase().includes(searchTerm));
-                const matchesCategory = !categoryFilterValue || product.category === categoryFilterValue;
-                
-                return matchesSearch && matchesCategory;
-            });
-            
-            // Mostrar/ocultar cards
-            cards.forEach(card => {
-                const name = card.dataset.name || '';
-                const category = card.dataset.category || '';
-                const matchesSearch = name.includes(searchTerm);
-                const matchesCategory = !categoryFilterValue || category === categoryFilterValue;
-                
-                if (matchesSearch && matchesCategory) {
-                    card.classList.remove('hidden');
-                } else {
-                    card.classList.add('hidden');
-                }
-            });
-            
-            console.log('✅ Filtered products:', currentProducts.length);
-        }
-
-        function filterByCategory(category) {
-            const categoryFilter = document.getElementById('categoryFilter');
-            if (categoryFilter) {
-                categoryFilter.value = category;
-                filterProducts();
-                scrollToSection('comparison-section');
-            }
-        }
-
-        function sortProducts() {
-            const sortSelect = document.getElementById('sortSelect');
-            if (!sortSelect) return;
-            
-            const sortBy = sortSelect.value;
-            const cards = Array.from(document.querySelectorAll('.product-card:not(.hidden)'));
-            const grid = document.getElementById('productsGrid');
-            
-            if (!grid) return;
-            
-            cards.sort((a, b) => {
-                switch(sortBy) {
-                    case 'price-low':
-                        return parseFloat(a.dataset.price || 0) - parseFloat(b.dataset.price || 0);
-                    case 'price-high':
-                        return parseFloat(b.dataset.price || 0) - parseFloat(a.dataset.price || 0);
-                    case 'rating':
-                        return parseFloat(b.dataset.rating || 0) - parseFloat(a.dataset.rating || 0);
-                    case 'name':
-                    default:
-                        return (a.dataset.name || '').localeCompare(b.dataset.name || '');
-                }
-            });
-            
-            cards.forEach(card => grid.appendChild(card));
-            console.log('✅ Products sorted by:', sortBy);
-        }
-
-        // FUNCIONES DE TRACKING Y MONETIZACIÓN
-        function trackPurchase(productName, price, affiliateUrl) {
-            console.log(`Purchase tracking: ${productName} - ${price}`);
-            
-            const confirmed = confirm(`🛒 ¿Quieres ver las mejores ofertas para ${productName}?\n\n💰 Precio actual: ${price}\n🎯 Te redirigiremos a nuestro partner de confianza\n\n¿Continuar?`);
-            
-            if (confirmed) {
-                alert(`🚀 Redirigiendo a la mejor oferta para ${productName}...\n\n📍 Partner: Amazon\n💳 Precio: ${price}\n📦 Envío gratis disponible\n🔒 Compra segura garantizada\n\n🔗 En un sitio real te llevaríamos a: ${affiliateUrl}`);
-            }
-        }
-
-        function trackAdClick(adLocation) {
-            console.log(`Ad click tracked: ${adLocation}`);
-            alert(`📢 ¡Publicidad Premium!\n\n🎯 Espacios disponibles desde $500/mes\n📊 CTR promedio: 2.3%\n👥 15,847+ usuarios activos\n📈 Crecimiento: +25% mensual\n\n📧 Contacto: ads@techcompare.com`);
-        }
-
-        // FUNCIONES DE COMPARACIÓN
-        function addToComparison(productId) {
-            const product = products.find(p => p.id === productId);
-            if (!product) return;
-            
-            if (comparedProducts.find(p => p.id === productId)) {
-                alert('❌ Este producto ya está en comparación');
-                return;
-            }
-            
-            if (comparedProducts.length >= 3) {
-                alert('⚠️ Máximo 3 productos para comparar');
-                return;
-            }
-            
-            comparedProducts.push(product);
-            alert(`✅ ${product.name} añadido a comparación\n\n📊 Productos: ${comparedProducts.length}/3\n\n${comparedProducts.map(p => `• ${p.name}`).join('\n')}`);
-            
-            if (comparedProducts.length >= 2) {
-                const showComparison = confirm(`🔍 ¿Ver comparación detallada ahora?`);
-                if (showComparison) {
-                    showComparisonModal();
-                }
-            }
-        }
-
-        function showComparisonModal() {
-            if (comparedProducts.length < 2) {
-                alert('⚠️ Necesitas al menos 2 productos para comparar');
-                return;
-            }
-            
-            const modal = document.getElementById('comparisonModal');
-            const content = document.getElementById('comparisonContent');
-            
-            if (!modal || !content) return;
-            
-            let comparisonHTML = `
-                <table class="comparison-table">
-                    <thead>
-                        <tr>
-                            <th>Característica</th>
-                            ${comparedProducts.map(p => `<th>${p.name}</th>`).join('')}
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <tr>
-                            <td><strong>💰 Precio</strong></td>
-                            ${comparedProducts.map(p => `<td style="font-weight: bold; color: #667eea;">${p.price}</td>`).join('')}
-                        </tr>
-                        <tr>
-                            <td><strong>⭐ Rating</strong></td>
-                            ${comparedProducts.map(p => `<td>${p.rating}/5 ${generateStars(p.rating)}</td>`).join('')}
-                        </tr>
-                        <tr>
-                            <td><strong>📝 Reviews</strong></td>
-                            ${comparedProducts.map(p => `<td>${p.reviews.toLocaleString()}</td>`).join('')}
-                        </tr>
-            `;
-            
-            const allFeatures = new Set();
-            comparedProducts.forEach(p => Object.keys(p.features).forEach(f => allFeatures.add(f)));
-            
-            allFeatures.forEach(feature => {
-                comparisonHTML += `
-                    <tr>
-                        <td><strong>${feature}</strong></td>
-                        ${comparedProducts.map(p => `<td>${p.features[feature] || 'N/A'}</td>`).join('')}
-                    </tr>
-                `;
-            });
-            
-            comparisonHTML += `
-                    </tbody>
-                </table>
-                <div style="margin-top: 2rem; text-align: center;">
-                    <button onclick="clearComparison()" style="background: #e74c3c; color: white; padding: 1rem 2rem; border: none; border-radius: 10px; cursor: pointer; margin-right: 1rem;">
-                        🗑️ Limpiar
-                    </button>
-                    <button onclick="closeModal()" style="background: #667eea; color: white; padding: 1rem 2rem; border: none; border-radius: 10px; cursor: pointer;">
-                        ✅ Cerrar
-                    </button>
-                </div>
-            `;
-            
-            content.innerHTML = comparisonHTML;
-            modal.classList.add('active');
-        }
-
-        function clearComparison() {
-            comparedProducts = [];
-            closeModal();
-            alert('🗑️ Comparación limpiada');
-        }
-
-        function closeModal() {
-            const modal = document.getElementById('comparisonModal');
-            if (modal) {
-                modal.classList.remove('active');
-            }
-        }
-
-        // NEWSLETTER
-        function handleNewsletter(event) {
-            event.preventDefault();
-            
-            const emailInput = document.getElementById('emailInput');
-            const button = document.getElementById('subscribeBtn');
-            const successMessage = document.getElementById('successMessage');
-            
-            if (!emailInput || !button || !successMessage) return;
-            
-            const email = emailInput.value.trim();
-            
-            if (!email.includes('@')) {
-                alert('Por favor, introduce un email válido');
-                return;
-            }
-            
-            button.innerHTML = '<div class="loading"></div> Suscribiendo...';
-            button.disabled = true;
-            
-            setTimeout(() => {
-                subscriberCount++;
-                updateSubscriberCount();
-                
-                successMessage.classList.add('show');
-                emailInput.value = '';
-                
-                button.innerHTML = 'Suscribirme';
-                button.disabled = false;
-                
-                setTimeout(() => {
-                    successMessage.classList.remove('show');
-                }, 5000);
-                
-                console.log(`New subscriber: ${email}`);
-            }, 2000);
-        }
-
-        function updateSubscriberCount() {
-            const element = document.getElementById('subscriberCount');
-            if (element) {
-                element.textContent = subscriberCount.toLocaleString();
-            }
-        }
-
-        // BLOG
-        function openBlogPost(postId) {
-            const post = blogPosts.find(p => p.id === postId);
-            if (!post) return;
-            
-            alert(`📖 "${post.title}"\n\n📅 ${post.date}\n⏱️ ${post.readTime}\n🏷️ ${post.tags.join(', ')}\n\nEn un sitio real, esto abriría el artículo completo.`);
-            console.log(`Blog post opened: ${post.title}`);
-        }
-
-        // MODALES
-        function showModal(type) {
-            const messages = {
-                about: '🏢 TechCompare es la plataforma líder en comparaciones de tecnología.\n\n👥 +15,847 usuarios confían en nosotros.',
-                methodology: '🔬 Metodología:\n• Pruebas rigurosas\n• Análisis técnico\n• Comparación de precios\n• Reviews verificados',
-                contact: '📞 Contacto:\n📧 info@techcompare.com\n📱 +1 (555) 123-4567\n🏢 123 Tech Street, Silicon Valley',
-                guides: '📚 Guías por categoría, presupuesto y necesidades específicas.',
-                reviews: '⭐ Reviews imparciales basados en pruebas reales.',
-                privacy: '🔒 Respetamos tu privacidad al 100%. Cumplimos GDPR y CCPA.',
-                terms: '📋 Términos de uso y políticas de enlaces de afiliados.',
-                affiliates: '💰 Divulgación: Este sitio contiene enlaces de afiliados.'
-            };
-            
-            alert(messages[type] || 'Información no disponible');
-        }
-
-        // ANIMACIONES
-        function animateOnScroll() {
-            const elements = document.querySelectorAll('.fade-in');
-            elements.forEach(element => {
-                const elementTop = element.getBoundingClientRect().top;
-                const elementVisible = 150;
-                
-                if (elementTop < window.innerHeight - elementVisible) {
-                    element.style.opacity = '1';
-                    element.style.transform = 'translateY(0)';
-                }
-            });
-        }
-
-        // EVENT LISTENERS
-        function initializeEventListeners() {
-            // Scroll events
-            window.addEventListener('scroll', () => {
-                animateOnScroll();
-            });
-
-            // Modal events
-            window.addEventListener('click', function(event) {
-                const modal = document.getElementById('comparisonModal');
-                if (event.target === modal) {
-                    closeModal();
-                }
-            });
-
-            // Keyboard events
-            document.addEventListener('keydown', function(event) {
-                if (event.key === 'Escape') {
-                    closeModal();
-                    const mobileMenu = document.getElementById('mobileMenu');
-                    if (mobileMenu && mobileMenu.classList.contains('active')) {
-                        toggleMenu();
-                    }
-                }
-            });
-
-            // Search events
-            const searchBox = document.getElementById('searchBox');
-            if (searchBox) {
-                searchBox.addEventListener('keypress', function(event) {
-                    if (event.key === 'Enter') {
-                        filterProducts();
-                    }
-                });
-            }
-
-            console.log('✅ Event listeners initialized');
-        }
-
-        // REAL TIME UPDATES
-        function startRealTimeUpdates() {
-            setInterval(() => {
-                if (Math.random() < 0.1) {
-                    subscriberCount += Math.floor(Math.random() * 3) + 1;
-                    updateSubscriberCount();
-                    
-                    const counter = document.getElementById('subscriberCount');
-                    if (counter) {
-                        counter.style.transform = 'scale(1.1)';
-                        counter.style.color = '#667eea';
-                        setTimeout(() => {
-                            counter.style.transform = 'scale(1)';
-                            counter.style.color = '';
-                        }, 300);
-                    }
-                }
-            }, 30000);
-        }
-
-        // INICIALIZACIÓN PRINCIPAL
-        document.addEventListener('DOMContentLoaded', function() {
-            console.log('🚀 Initializing TechCompare...');
-            
-            try {
-                // Cargar contenido
-                loadProducts();
-                loadBlogPosts();
-                updateSubscriberCount();
-                
-                // Inicializar funcionalidades
-                initializeEventListeners();
-                startRealTimeUpdates();
-                
-                // Animaciones iniciales
-                setTimeout(() => {
-                    animateOnScroll();
-                }, 500);
-                
-                console.log('✅ TechCompare initialized successfully');
-                console.log(`📊 Products: ${products.length}`);
-                console.log(`📰 Blog posts: ${blogPosts.length}`);
-                console.log(`👥 Subscribers: ${subscriberCount.toLocaleString()}`);
-                
-            } catch (error) {
-                console.error('❌ Error during initialization:', error);
-            }
-        });
-
-        // Fallback initialization
-        if (document.readyState !== 'loading') {
-            setTimeout(() => {
-                const grid = document.getElementById('productsGrid');
-                if (grid && !grid.children.length) {
-                    console.log('🔄 Fallback initialization...');
-                    loadProducts();
-                    loadBlogPosts();
-                    updateSubscriberCount();
-                    initializeEventListeners();
-                }
-            }, 100);
-        }
-    </script>
-</body>
-</html><!DOCTYPE html>
-<html lang="es">
+<!DOCTYPE html>
+<html lang="es" class="scroll-smooth">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>TechCompare - Las Mejores Comparaciones de Productos Tech</title>
+    <title>TechCompare Pro - Comparaciones de Tecnología</title>
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    
+    <!-- Google Fonts: Inter -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome for Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
+        /* Custom styles to complement Tailwind */
         body {
-            font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
-            line-height: 1.6;
-            color: #333;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
+            font-family: 'Inter', sans-serif;
+            background-color: #f0f2f5; /* Un gris más suave */
         }
-
-        .container {
-            max-width: 1200px;
-            margin: 0 auto;
-            padding: 0 20px;
-        }
-
-        /* Header */
-        header {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            padding: 1rem 0;
-            position: sticky;
-            top: 0;
-            z-index: 100;
-            box-shadow: 0 2px 20px rgba(0, 0, 0, 0.1);
-        }
-
-        nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .logo {
-            font-size: 1.8rem;
-            font-weight: 800;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            cursor: pointer;
-        }
-
-        .nav-links {
-            display: flex;
-            list-style: none;
-            gap: 2rem;
-        }
-
-        .nav-links a {
-            text-decoration: none;
-            color: #333;
-            font-weight: 500;
-            transition: color 0.3s;
-            cursor: pointer;
-        }
-
-        .nav-links a:hover {
-            color: #667eea;
-        }
-
-        .cta-button {
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            padding: 0.7rem 1.5rem;
-            border: none;
-            border-radius: 25px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s, box-shadow 0.3s;
-        }
-
-        .cta-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .menu-toggle {
-            display: none;
-            background: none;
-            border: none;
-            font-size: 1.5rem;
-            cursor: pointer;
-        }
-
-        .mobile-menu {
-            display: none;
-            background: white;
-            position: absolute;
-            top: 100%;
-            left: 0;
-            right: 0;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
-            border-radius: 0 0 15px 15px;
-        }
-
-        .mobile-menu.active {
-            display: block;
-        }
-
-        .mobile-menu a {
-            display: block;
-            padding: 1rem 2rem;
-            color: #333;
-            text-decoration: none;
-            border-bottom: 1px solid #eee;
-        }
-
-        /* Hero Section */
-        .hero {
-            text-align: center;
-            padding: 4rem 0;
-            color: white;
-        }
-
-        .hero h1 {
-            font-size: clamp(2.5rem, 5vw, 4rem);
-            font-weight: 900;
-            margin-bottom: 1rem;
-            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
-        }
-
-        .hero p {
-            font-size: 1.2rem;
-            margin-bottom: 2rem;
-            opacity: 0.9;
-        }
-
-        .hero-buttons {
-            display: flex;
-            gap: 1rem;
-            justify-content: center;
-            flex-wrap: wrap;
-        }
-
-        .btn-primary, .btn-secondary {
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 30px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1rem;
-        }
-
-        .btn-primary {
-            background: white;
-            color: #667eea;
-        }
-
-        .btn-secondary {
-            background: transparent;
-            color: white;
-            border: 2px solid white;
-        }
-
-        .btn-primary:hover, .btn-secondary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.2);
-        }
-
-        /* Main Content */
-        .main-content {
-            background: white;
-            border-radius: 20px 20px 0 0;
-            margin-top: 2rem;
-            min-height: 100vh;
-            position: relative;
-        }
-
-        .content-wrapper {
-            padding: 3rem 0;
-        }
-
-        /* Search and Filter */
-        .search-filter {
-            display: flex;
-            gap: 1rem;
-            margin: 2rem 0;
-            flex-wrap: wrap;
-            align-items: center;
-        }
-
-        .search-container {
-            display: flex;
-            gap: 0.5rem;
-            flex: 1;
-            min-width: 250px;
-        }
-
-        .search-box {
-            flex: 1;
-            padding: 1rem;
-            border: 2px solid #eee;
-            border-radius: 25px;
-            font-size: 1rem;
-            transition: border-color 0.3s;
-        }
-
-        .search-box:focus {
-            outline: none;
-            border-color: #667eea;
-        }
-
-        .search-btn {
-            background: #667eea;
-            color: white;
-            border: none;
-            padding: 1rem 1.5rem;
-            border-radius: 25px;
-            cursor: pointer;
-            font-weight: 600;
-            transition: all 0.3s;
-        }
-
-        .search-btn:hover {
-            background: #5a67d8;
-            transform: translateY(-1px);
-        }
-
-        .filter-select, .sort-select {
-            padding: 1rem;
-            border: 2px solid #eee;
-            border-radius: 25px;
-            font-size: 1rem;
-            cursor: pointer;
-            background: white;
-        }
-
-        /* Ad Spaces */
-        .ad-banner {
-            background: linear-gradient(45deg, #f093fb 0%, #f5576c 100%);
-            color: white;
-            text-align: center;
-            padding: 1rem;
-            border-radius: 10px;
-            margin: 2rem 0;
-            font-weight: 600;
-            cursor: pointer;
-            transition: transform 0.3s;
-            min-height: 90px;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-        }
-
-        .ad-banner:hover {
-            transform: scale(1.02);
-        }
-
-        /* Comparison Grid */
-        .comparison-section {
-            margin: 3rem 0;
-        }
-
-        .section-title {
-            text-align: center;
-            font-size: 2.5rem;
-            font-weight: 800;
-            margin-bottom: 3rem;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+        .gradient-text {
+            background: linear-gradient(45deg, #6366f1, #a855f7);
             -webkit-background-clip: text;
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
-
-        .comparison-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 2rem;
-            margin: 2rem 0;
+        .card-hover-effect {
+            transition: transform 0.3s ease, box-shadow 0.3s ease;
         }
-
-        .product-card {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s, box-shadow 0.3s;
-            position: relative;
-            overflow: hidden;
+        .card-hover-effect:hover {
+            transform: translateY(-8px);
+            box-shadow: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
         }
-
-        .product-card.hidden {
-            display: none;
+        /* Animaciones para modales y notificaciones */
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
         }
-
-        .product-card::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 4px;
-            background: linear-gradient(45deg, #667eea, #764ba2);
+        @keyframes fadeOut {
+            from { opacity: 1; }
+            to { opacity: 0; }
         }
-
-        .product-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.15);
+        @keyframes slideInUp {
+            from { transform: translateY(20px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
         }
-
-        .best-choice {
-            position: absolute;
-            top: 15px;
-            right: 15px;
-            background: linear-gradient(45deg, #ff6b6b, #ee5a52);
-            color: white;
-            padding: 0.5rem 1rem;
-            border-radius: 20px;
-            font-size: 0.8rem;
-            font-weight: 700;
-            text-transform: uppercase;
+        @keyframes slideOutDown {
+            from { transform: translateY(0); opacity: 1; }
+            to { transform: translateY(20px); opacity: 0; }
         }
-
-        .product-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
-            border-radius: 10px;
-            margin-bottom: 1.5rem;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 3rem;
-            color: #667eea;
-            position: relative;
-            overflow: hidden;
+        .modal-backdrop {
+            animation: fadeIn 0.3s ease-out forwards;
         }
-
-        .product-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: contain;
-            background: white;
-            border-radius: 10px;
-        }
-
-        .product-title {
-            font-size: 1.5rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #333;
-        }
-
-        .product-price {
-            font-size: 2rem;
-            font-weight: 800;
-            color: #667eea;
-            margin-bottom: 0.5rem;
-        }
-
-        .original-price {
-            font-size: 1rem;
-            color: #999;
-            text-decoration: line-through;
-            margin-left: 0.5rem;
-        }
-
-        .discount {
-            background: #ff4757;
-            color: white;
-            padding: 0.2rem 0.5rem;
-            border-radius: 5px;
-            font-size: 0.8rem;
-            margin-left: 0.5rem;
-        }
-
-        .product-rating {
-            display: flex;
-            align-items: center;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-        }
-
-        .stars {
-            color: #ffd700;
-        }
-
-        .rating-text {
-            color: #666;
-            font-size: 0.9rem;
-        }
-
-        .product-features {
-            list-style: none;
-            margin-bottom: 1.5rem;
-        }
-
-        .product-features li {
-            padding: 0.5rem 0;
-            border-bottom: 1px solid #eee;
-            display: flex;
-            justify-content: space-between;
-        }
-
-        .feature-name {
-            font-weight: 600;
-        }
-
-        .feature-value {
-            color: #666;
-        }
-
-        .pros-cons {
-            margin-bottom: 1.5rem;
-        }
-
-        .pros, .cons {
-            margin-bottom: 1rem;
-        }
-
-        .pros h5, .cons h5 {
-            font-weight: 600;
-            margin-bottom: 0.5rem;
-        }
-
-        .pros h5 {
-            color: #27ae60;
-        }
-
-        .cons h5 {
-            color: #e74c3c;
-        }
-
-        .pros ul, .cons ul {
-            list-style: none;
-            font-size: 0.9rem;
-        }
-
-        .pros li::before {
-            content: "✓ ";
-            color: #27ae60;
-            font-weight: bold;
-        }
-
-        .cons li::before {
-            content: "✗ ";
-            color: #e74c3c;
-            font-weight: bold;
-        }
-
-        .affiliate-button {
-            width: 100%;
-            background: linear-gradient(45deg, #667eea, #764ba2);
-            color: white;
-            padding: 1rem;
-            border: none;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 1rem;
-            text-transform: uppercase;
-            letter-spacing: 1px;
-            margin-bottom: 0.5rem;
-        }
-
-        .affiliate-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(102, 126, 234, 0.3);
-        }
-
-        .compare-button {
-            width: 100%;
-            background: transparent;
-            color: #667eea;
-            border: 2px solid #667eea;
-            padding: 0.8rem;
-            border-radius: 10px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-            font-size: 0.9rem;
-        }
-
-        .compare-button:hover {
-            background: #667eea;
-            color: white;
-        }
-
-        /* Blog Section */
-        .blog-section {
-            background: #f8f9fa;
-            padding: 4rem 0;
-            margin: 3rem 0;
-            border-radius: 20px;
-        }
-
-        .blog-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 2rem;
-        }
-
-        .blog-card {
-            background: white;
-            border-radius: 15px;
-            overflow: hidden;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
-            transition: transform 0.3s;
-            cursor: pointer;
-        }
-
-        .blog-card:hover {
-            transform: translateY(-5px);
-        }
-
-        .blog-image {
-            width: 100%;
-            height: 200px;
-            background: linear-gradient(135deg, #ffecd2 0%, #fcb69f 100%);
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 2rem;
-            color: white;
-            overflow: hidden;
-        }
-
-        .blog-image img {
-            width: 100%;
-            height: 100%;
-            object-fit: cover;
-        }
-
-        .blog-content {
-            padding: 1.5rem;
-        }
-
-        .blog-date {
-            color: #666;
-            font-size: 0.9rem;
-            margin-bottom: 0.5rem;
-        }
-
-        .blog-title {
-            font-size: 1.3rem;
-            font-weight: 700;
-            margin-bottom: 1rem;
-            color: #333;
-        }
-
-        .blog-excerpt {
-            color: #666;
-            margin-bottom: 1rem;
-            line-height: 1.6;
-        }
-
-        .blog-tags {
-            display: flex;
-            gap: 0.5rem;
-            margin-bottom: 1rem;
-            flex-wrap: wrap;
-        }
-
-        .tag {
-            background: #e9ecef;
-            color: #495057;
-            padding: 0.2rem 0.5rem;
-            border-radius: 15px;
-            font-size: 0.8rem;
-        }
-
-        .read-more {
-            color: #667eea;
-            font-weight: 600;
-            text-decoration: none;
-            transition: color 0.3s;
-        }
-
-        .read-more:hover {
-            color: #764ba2;
-        }
-
-        /* Newsletter */
-        .newsletter {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            padding: 3rem 0;
-            text-align: center;
-            border-radius: 20px;
-            margin: 3rem 0;
-        }
-
-        .newsletter h3 {
-            font-size: 2rem;
-            margin-bottom: 1rem;
-        }
-
-        .newsletter-stats {
-            display: flex;
-            justify-content: center;
-            gap: 2rem;
-            margin: 1rem 0;
-            flex-wrap: wrap;
-        }
-
-        .stat {
-            text-align: center;
-        }
-
-        .stat-number {
-            font-size: 2rem;
-            font-weight: 800;
-        }
-
-        .stat-label {
-            font-size: 0.9rem;
-            opacity: 0.8;
-        }
-
-        .newsletter-form {
-            display: flex;
-            max-width: 500px;
-            margin: 2rem auto 0;
-            gap: 1rem;
-            flex-wrap: wrap;
-            justify-content: center;
-        }
-
-        .newsletter-input {
-            flex: 1;
-            min-width: 250px;
-            padding: 1rem;
-            border: none;
-            border-radius: 25px;
-            font-size: 1rem;
-        }
-
-        .newsletter-button {
-            background: white;
-            color: #667eea;
-            padding: 1rem 2rem;
-            border: none;
-            border-radius: 25px;
-            font-weight: 600;
-            cursor: pointer;
-            transition: all 0.3s;
-        }
-
-        .newsletter-button:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 10px 25px rgba(255, 255, 255, 0.3);
-        }
-
-        .success-message {
-            background: #d4edda;
-            color: #155724;
-            padding: 1rem;
-            border-radius: 10px;
-            margin: 1rem 0;
-            display: none;
-        }
-
-        .success-message.show {
-            display: block;
-        }
-
-        /* Modal */
-        .modal {
-            display: none;
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            background: rgba(0, 0, 0, 0.8);
-            z-index: 1000;
-            justify-content: center;
-            align-items: center;
-        }
-
-        .modal.active {
-            display: flex;
-        }
-
         .modal-content {
-            background: white;
-            border-radius: 15px;
-            padding: 2rem;
-            max-width: 90%;
-            max-height: 90%;
-            overflow-y: auto;
-            position: relative;
+            animation: slideInUp 0.4s ease-out forwards;
         }
-
-        .modal-close {
-            position: absolute;
-            top: 1rem;
-            right: 1rem;
-            background: none;
-            border: none;
-            font-size: 2rem;
-            cursor: pointer;
-            color: #666;
-        }
-
-        .comparison-table {
-            width: 100%;
-            border-collapse: collapse;
-            margin-top: 1rem;
-        }
-
-        .comparison-table th,
-        .comparison-table td {
-            padding: 1rem;
-            text-align: left;
-            border-bottom: 1px solid #eee;
-        }
-
-        .comparison-table th {
-            background: #f8f9fa;
-            font-weight: 600;
-        }
-
-        /* Footer */
-        footer {
-            background: #333;
-            color: white;
-            padding: 3rem 0 1rem;
-            text-align: center;
-        }
-
-        .footer-content {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 2rem;
-            margin-bottom: 2rem;
-        }
-
-        .footer-section h4 {
-            margin-bottom: 1rem;
-            color: #667eea;
-        }
-
-        .footer-section a {
-            color: #ccc;
-            text-decoration: none;
-            display: block;
-            margin-bottom: 0.5rem;
-            transition: color 0.3s;
-            cursor: pointer;
-        }
-
-        .footer-section a:hover {
-            color: white;
-        }
-
-        /* Responsive Design */
-        @media (max-width: 1200px) {
-            .container {
-                padding: 0 15px;
-            }
-        }
-
-        @media (max-width: 992px) {
-            .comparison-grid {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1.5rem;
-            }
-            
-            .blog-grid {
-                grid-template-columns: repeat(2, 1fr);
-            }
-            
-            .search-filter {
-                flex-direction: column;
-                gap: 1rem;
-            }
-            
-            .search-container {
-                width: 100%;
-            }
-            
-            .filter-select, .sort-select {
-                width: 100%;
-            }
-        }
-
-        @media (max-width: 768px) {
-            .nav-links {
-                display: none;
-            }
-
-            .menu-toggle {
-                display: block;
-            }
-
-            .hero h1 {
-                font-size: 2.5rem;
-            }
-
-            .hero-buttons {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .btn-primary, .btn-secondary {
-                width: 100%;
-                max-width: 300px;
-            }
-
-            .comparison-grid {
-                grid-template-columns: 1fr;
-            }
-            
-            .blog-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .search-filter {
-                flex-direction: column;
-            }
-
-            .search-container {
-                width: 100%;
-            }
-
-            .newsletter-form {
-                flex-direction: column;
-                align-items: center;
-            }
-
-            .newsletter-input {
-                width: 100%;
-                max-width: 350px;
-            }
-
-            .newsletter-stats {
-                flex-direction: column;
-                gap: 1rem;
-            }
-
-            .modal-content {
-                margin: 1rem;
-                max-width: calc(100% - 2rem);
-                padding: 1rem;
-            }
-            
-            .comparison-table {
-                font-size: 14px;
-            }
-            
-            .comparison-table th,
-            .comparison-table td {
-                padding: 0.5rem;
-            }
-            
-            .footer-content {
-                grid-template-columns: repeat(2, 1fr);
-                gap: 1rem;
-            }
-            
-            .section-title {
-                font-size: 2rem;
-            }
-            
-            .product-card {
-                padding: 1.5rem;
-            }
-        }
-
-        @media (max-width: 480px) {
-            .container {
-                padding: 0 10px;
-            }
-            
-            .hero {
-                padding: 2rem 0;
-            }
-            
-            .hero h1 {
-                font-size: 2rem;
-            }
-            
-            .hero p {
-                font-size: 1rem;
-            }
-            
-            .content-wrapper {
-                padding: 2rem 0;
-            }
-            
-            .section-title {
-                font-size: 1.8rem;
-                margin-bottom: 2rem;
-            }
-            
-            .product-card {
-                padding: 1rem;
-            }
-            
-            .product-price {
-                font-size: 1.5rem;
-            }
-            
-            .newsletter h3 {
-                font-size: 1.5rem;
-            }
-            
-            .newsletter-stats {
-                gap: 0.5rem;
-            }
-            
-            .stat-number {
-                font-size: 1.5rem;
-            }
-            
-            .footer-content {
-                grid-template-columns: 1fr;
-                text-align: center;
-            }
-        }
-
-        /* Loading animation */
-        .loading {
-            display: inline-block;
-            width: 20px;
-            height: 20px;
-            border: 2px solid #f3f3f3;
-            border-top: 2px solid #667eea;
-            border-radius: 50%;
-            animation: spin 1s linear infinite;
-        }
-
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
-        }
-
-        /* Animations */
-        @keyframes fadeInUp {
-            from {
-                opacity: 0;
-                transform: translateY(30px);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0);
-            }
-        }
-
-        .fade-in {
-            animation: fadeInUp 0.6s ease-out;
-        }
-
-        .floating {
-            animation: float 6s ease-in-out infinite;
-        }
-
-        @keyframes float {
-            0%, 100% { transform: translateY(0px); }
-            50% { transform: translateY(-20px); }
+        .toast-out {
+            animation: fadeOut 0.5s ease-out forwards;
         }
     </style>
 </head>
-<body>
-    <header>
-        <nav class="container">
-            <div class="logo" onclick="scrollToTop()">TechCompare</div>
-            <ul class="nav-links">
-                <li><a onclick="scrollToSection('hero')">Inicio</a></li>
-                <li><a onclick="scrollToSection('comparison-section')">Comparaciones</a></li>
-                <li><a onclick="scrollToSection('blog-section')">Blog</a></li>
-                <li><a onclick="scrollToSection('footer')">Contacto</a></li>
-            </ul>
-            <button class="menu-toggle" onclick="toggleMenu()">☰</button>
-            <button class="cta-button" onclick="scrollToSection('newsletter')">Suscríbete</button>
-            <div class="mobile-menu" id="mobileMenu">
-                <a onclick="scrollToSection('hero'); toggleMenu()">Inicio</a>
-                <a onclick="scrollToSection('comparison-section'); toggleMenu()">Comparaciones</a>
-                <a onclick="scrollToSection('blog-section'); toggleMenu()">Blog</a>
-                <a onclick="scrollToSection('footer'); toggleMenu()">Contacto</a>
+<body class="text-gray-800">
+
+    <!-- ===== HEADER ===== -->
+    <header class="bg-white/90 backdrop-blur-lg shadow-sm sticky top-0 z-40">
+        <nav class="container mx-auto px-4 py-3 flex justify-between items-center">
+            <a href="#" class="text-2xl font-extrabold gradient-text">TechCompare Pro</a>
+            <div class="hidden lg:flex items-center space-x-8">
+                <a href="#comparison-section" class="text-gray-600 hover:text-indigo-600 font-medium transition-colors">Comparaciones</a>
+                <a href="#blog-section" class="text-gray-600 hover:text-indigo-600 font-medium transition-colors">Blog</a>
+                <a href="#footer" class="text-gray-600 hover:text-indigo-600 font-medium transition-colors">Contacto</a>
+            </div>
+            <div class="flex items-center space-x-4">
+                 <a href="#newsletter" class="bg-indigo-600 text-white px-5 py-2.5 rounded-full font-semibold hover:bg-indigo-700 transition-all shadow-sm hover:shadow-lg transform hover:-translate-y-0.5">
+                    Suscríbete
+                </a>
+                <button id="mobileMenuBtn" class="lg:hidden text-2xl text-gray-700">
+                    <i class="fa-solid fa-bars"></i>
+                </button>
             </div>
         </nav>
+        <!-- Mobile Menu -->
+        <div id="mobileMenu" class="hidden lg:hidden bg-white border-t border-gray-200">
+            <a href="#comparison-section" class="block px-5 py-3 text-gray-600 hover:bg-indigo-50">Comparaciones</a>
+            <a href="#blog-section" class="block px-5 py-3 text-gray-600 hover:bg-indigo-50">Blog</a>
+            <a href="#footer" class="block px-5 py-3 text-gray-600 hover:bg-indigo-50">Contacto</a>
+        </div>
     </header>
 
-    <section class="hero" id="hero">
-        <div class="container">
-            <h1 class="floating">Las Mejores Comparaciones Tech</h1>
-            <p>Encuentra el producto perfecto con nuestras comparaciones detalladas y reviews honestos</p>
-            <div class="hero-buttons">
-                <button class="btn-primary" onclick="scrollToSection('comparison-section')">Ver Comparaciones</button>
-                <button class="btn-secondary" onclick="scrollToSection('newsletter')">Únete Gratis</button>
+    <!-- ===== MAIN CONTENT ===== -->
+    <main>
+        <!-- Hero Section -->
+        <section id="hero" class="bg-gradient-to-br from-indigo-500 to-purple-600 text-white text-center pt-20 pb-28 px-4">
+            <div class="container mx-auto">
+                <h1 class="text-4xl md:text-6xl font-black mb-4 animate-pulse">Decisiones Tech, Simplificadas.</h1>
+                <p class="text-lg md:text-xl max-w-3xl mx-auto mb-8 opacity-90">Análisis exhaustivos y comparaciones claras para que elijas la tecnología perfecta para ti.</p>
+                <a href="#comparison-section" class="bg-white text-indigo-600 px-8 py-4 rounded-full font-bold text-lg hover:bg-gray-100 transition-all shadow-lg hover:shadow-2xl transform hover:-translate-y-1">
+                    <i class="fa-solid fa-magnifying-glass mr-2"></i>Empezar a Comparar
+                </a>
+            </div>
+        </section>
+        
+        <!-- Why Trust Us Section -->
+        <section id="trust-us" class="container mx-auto mt-[-5rem] relative z-10 px-4">
+            <div class="bg-white rounded-2xl shadow-xl p-8 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8 text-center">
+                <div class="trust-card">
+                    <i class="fa-solid fa-scale-balanced text-3xl text-indigo-500 mb-3"></i>
+                    <h3 class="font-bold text-lg">Análisis Imparcial</h3>
+                    <p class="text-sm text-gray-600">Nuestras reviews son 100% objetivas y basadas en datos.</p>
+                </div>
+                <div class="trust-card">
+                    <i class="fa-solid fa-flask-vial text-3xl text-indigo-500 mb-3"></i>
+                    <h3 class="font-bold text-lg">Pruebas Reales</h3>
+                    <p class="text-sm text-gray-600">Probamos cada producto para darte una visión real de su rendimiento.</p>
+                </div>
+                <div class="trust-card">
+                    <i class="fa-solid fa-arrows-rotate text-3xl text-indigo-500 mb-3"></i>
+                    <h3 class="font-bold text-lg">Datos Actualizados</h3>
+                    <p class="text-sm text-gray-600">Mantenemos precios y especificaciones al día para ti.</p>
+                </div>
+                <div class="trust-card">
+                    <i class="fa-solid fa-users text-3xl text-indigo-500 mb-3"></i>
+                    <h3 class="font-bold text-lg">Comunidad Experta</h3>
+                    <p class="text-sm text-gray-600">Con la confianza de miles de entusiastas de la tecnología.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- Page Content Wrapper -->
+        <div class="container mx-auto mt-8 relative z-10 p-4">
+            <div class="bg-white rounded-2xl shadow-xl p-4 sm:p-6 lg:p-8">
+
+                <!-- Ad Banner Top -->
+                <div class="flex justify-center my-8">
+                    <script type="text/javascript">
+                        atOptions = {
+                            'key' : '620b30c72681e6d9e19ac5847d366df3',
+                            'format' : 'iframe',
+                            'height' : 90,
+                            'width' : 728,
+                            'params' : {}
+                        };
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/620b30c72681e6d9e19ac5847d366df3/invoke.js"></script>
+                </div>
+
+                <!-- Main Layout Grid -->
+                <div class="lg:grid lg:grid-cols-12 lg:gap-8">
+                    
+                    <!-- Sidebar (Filters & Ads) -->
+                    <aside class="lg:col-span-3 mb-8 lg:mb-0">
+                        <div class="sticky top-24">
+                            <!-- Search & Filter Card -->
+                            <div class="p-5 bg-gray-50 rounded-xl border border-gray-200 mb-8">
+                                <h3 class="font-bold text-lg mb-4 border-b pb-2">Filtra tu Búsqueda</h3>
+                                <div class="space-y-4">
+                                    <input type="text" id="searchBox" placeholder="Buscar por nombre, modelo..." class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition">
+                                    <select id="categoryFilter" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition">
+                                        <option value="">Todas las categorías</option>
+                                        <option value="smartphone">Smartphones</option>
+                                        <option value="laptop">Laptops</option>
+                                        <option value="headphones">Auriculares</option>
+                                        <option value="smartwatch">Smartwatches</option>
+                                        <option value="tablet">Tablets</option>
+                                        <option value="gaming">Gaming</option>
+                                    </select>
+                                    <select id="sortSelect" class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-indigo-400 focus:border-indigo-400 transition">
+                                        <option value="name">Ordenar por Nombre</option>
+                                        <option value="price-low">Precio: Menor a Mayor</option>
+                                        <option value="price-high">Precio: Mayor a Menor</option>
+                                        <option value="rating">Mejor Calificación</option>
+                                    </select>
+                                </div>
+                            </div>
+                            <!-- Skyscraper Ad -->
+                            <div class="p-4 text-center">
+                                <script type="text/javascript">
+                                    atOptions = {
+                                        'key' : '6d8c30dd46a8bf54339111cf0646a794',
+                                        'format' : 'iframe',
+                                        'height' : 250,
+                                        'width' : 300,
+                                        'params' : {}
+                                    };
+                                </script>
+                                <script type="text/javascript" src="//www.highperformanceformat.com/6d8c30dd46a8bf54339111cf0646a794/invoke.js"></script>
+                            </div>
+                        </div>
+                    </aside>
+
+                    <!-- Content Area -->
+                    <div class="lg:col-span-9">
+                        <!-- Products Section -->
+                        <section id="comparison-section">
+                            <h2 class="text-3xl font-extrabold mb-6 gradient-text">Comparación de Productos 2025</h2>
+                            <div id="productsGrid" class="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                                <!-- Product cards and ad cards will be injected here -->
+                            </div>
+                        </section>
+
+                        <!-- Blog Section -->
+                        <section id="blog-section" class="mt-16">
+                            <h2 class="text-3xl font-extrabold mb-6 gradient-text">Nuestro Blog de Tecnología</h2>
+                            <div id="blogGrid" class="grid grid-cols-1 md:grid-cols-2 gap-8">
+                                <!-- Blog cards will be injected here -->
+                            </div>
+                        </section>
+                    </div>
+                </div>
+
+                <!-- Intermediate Ad Banner -->
+                <div class="flex justify-center my-8">
+                    <script type="text/javascript">
+                        atOptions = {
+                            'key' : '54bda572871ee2c0b22d266e9e713d59',
+                            'format' : 'iframe',
+                            'height' : 60,
+                            'width' : 468,
+                            'params' : {}
+                        };
+                    </script>
+                    <script type="text/javascript" src="//www.highperformanceformat.com/54bda572871ee2c0b22d266e9e713d59/invoke.js"></script>
+                </div>
+
+
+                <!-- Newsletter Section -->
+                <section id="newsletter" class="bg-gradient-to-br from-indigo-600 to-purple-700 text-white rounded-2xl p-8 md:p-12 text-center mt-16">
+                    <h3 class="text-3xl font-bold mb-2">Únete a la élite tecnológica.</h3>
+                    <p class="opacity-80 mb-6">Recibe análisis exclusivos y las mejores ofertas directamente en tu email.</p>
+                    <div class="flex justify-center gap-8 md:gap-16 mb-8">
+                        <div class="text-center">
+                            <span id="subscriberCount" class="text-3xl font-bold block">15,847</span>
+                            <span class="opacity-80">Suscriptores</span>
+                        </div>
+                        <div class="text-center">
+                            <span class="text-3xl font-bold block">9.5/10</span>
+                            <span class="opacity-80">Satisfacción</span>
+                        </div>
+                    </div>
+                    <form id="newsletterForm" class="max-w-lg mx-auto flex flex-col sm:flex-row gap-3">
+                        <input type="email" id="emailInput" required placeholder="tu@email.com" class="flex-grow px-5 py-3 rounded-full text-gray-800 focus:ring-4 focus:ring-purple-300 focus:outline-none transition">
+                        <button type="submit" id="subscribeBtn" class="bg-white text-indigo-600 px-6 py-3 rounded-full font-bold hover:bg-gray-100 transition-all shadow-md hover:shadow-lg transform hover:-translate-y-0.5">
+                            Suscribirme Ahora
+                        </button>
+                    </form>
+                </section>
+            </div>
+        </main>
+    </main>
+
+    <!-- ===== FOOTER ===== -->
+    <footer id="footer" class="bg-gray-800 text-gray-400 mt-16 py-12">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-5 gap-8 mb-8">
+                <div class="col-span-2 lg:col-span-1">
+                    <h4 class="text-xl font-extrabold text-white mb-2">TechCompare Pro</h4>
+                    <p class="text-sm">Análisis y comparaciones de tecnología para decisiones inteligentes.</p>
+                </div>
+                <div>
+                    <h5 class="font-bold text-white mb-4">Compañía</h5>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors" onclick="showInfoModal('about')">Acerca de</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors" onclick="showInfoModal('methodology')">Metodología</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors" onclick="showInfoModal('contact')">Contacto</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-bold text-white mb-4">Categorías</h5>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors" onclick="filterByCategory('smartphone')">Smartphones</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors" onclick="filterByCategory('laptop')">Laptops</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors" onclick="filterByCategory('headphones')">Auriculares</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors" onclick="filterByCategory('smartwatch')">Smartwatches</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h5 class="font-bold text-white mb-4">Legal</h5>
+                    <ul class="space-y-2 text-sm">
+                        <li><a href="#" class="hover:text-white transition-colors" onclick="showInfoModal('privacy')">Política de Privacidad</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors" onclick="showInfoModal('terms')">Términos de Uso</a></li>
+                        <li><a href="#" class="hover:text-white transition-colors" onclick="showInfoModal('affiliates')">Afiliados</a></li>
+                    </ul>
+                </div>
+                 <!-- Ad Spot Footer -->
+                <div class="p-4 text-center flex items-center justify-center">
+                    <script async="async" data-cfasync="false" src="//pl27083145.profitableratecpm.com/8a6a616489b4e0ee68ed1097f2badb28/invoke.js"></script>
+                    <div id="container-8a6a616489b4e0ee68ed1097f2badb28"></div>
+                </div>
+            </div>
+            <div class="border-t border-gray-700 pt-6 text-center text-sm">
+                <p>&copy; 2025 TechCompare Pro. Todos los derechos reservados.</p>
             </div>
         </div>
-    </section>
+    </footer>
 
-    <main class="main-content">
-        <div class="container content-wrapper">
-            <!-- Espacio publicitario -->
-            <div class="ad-banner" onclick="trackAdClick('banner-top')">
-                📢 Publicidad Premium - Aumenta tus ventas con nosotros | Contáctanos para más info
-            </div>
+    <!-- ===== MODALS & NOTIFICATIONS ===== -->
+    <div id="modal-container" class="fixed inset-0 z-50 hidden items-center justify-center p-4">
+        <!-- Modals will be injected here -->
+    </div>
+    <div id="notification-container" class="fixed top-5 right-5 z-[60] flex flex-col gap-3">
+        <!-- Notifications will be injected here -->
+    </div>
 
-            <!-- Búsqueda y filtros -->
-            <div class="search-filter">
-                <div class="search-container">
-                    <input type="text" class="search-box" id="searchBox" placeholder="Buscar productos...">
-                    <button class="search-btn" onclick="filterProducts()">🔍 Buscar</button>
+    <script>
+    document.addEventListener('DOMContentLoaded', function() {
+
+        // =================================================================
+        // STATE & DATA
+        // =================================================================
+        const products = [
+            { id: 1, name: "iPhone 15 Pro", category: "smartphone", price: 999, originalPrice: 1199, image: "https://placehold.co/600x400/a3a3a3/ffffff?text=iPhone+15+Pro", rating: 4.8, reviews: 2847, features: { "Pantalla": "6.1\" OLED", "Almacenamiento": "128GB", "Cámara": "48MP Triple", "Batería": "3274mAh", "Procesador": "A17 Pro" }, pros: ["Cámara excelente", "Rendimiento superior", "Construcción premium"], cons: ["Precio elevado", "Sin cargador"], bestChoice: true, affiliateUrl: "#" },
+            { id: 2, name: "Samsung Galaxy S24 Ultra", category: "smartphone", price: 849, originalPrice: 999, image: "https://placehold.co/600x400/a1a1aa/ffffff?text=Galaxy+S24+Ultra", rating: 4.7, reviews: 1923, features: { "Pantalla": "6.8\" AMOLED", "Almacenamiento": "256GB", "Cámara": "200MP Quad", "Batería": "5000mAh", "Procesador": "Snapdragon 8 Gen 3" }, pros: ["Batería excelente", "S Pen incluido", "Pantalla gigante"], cons: ["Muy grande", "Software pesado"], bestChoice: false, affiliateUrl: "#" },
+            { id: 3, name: "Google Pixel 8 Pro", category: "smartphone", price: 699, originalPrice: 799, image: "https://placehold.co/600x400/a3a3a3/ffffff?text=Pixel+8+Pro", rating: 4.6, reviews: 1456, features: { "Pantalla": "6.7\" OLED", "Almacenamiento": "128GB", "Cámara": "50MP Triple", "Batería": "5050mAh", "Procesador": "Google Tensor G3" }, pros: ["IA avanzada", "Fotos nocturnas", "Android puro"], cons: ["Menos almacenamiento", "Procesador menos potente"], bestChoice: false, affiliateUrl: "#" },
+            { id: 4, name: "MacBook Air M3", category: "laptop", price: 1299, originalPrice: 1499, image: "https://placehold.co/600x400/737373/ffffff?text=MacBook+Air+M3", rating: 4.9, reviews: 3421, features: { "Pantalla": "13.6\" Liquid Retina", "Procesador": "Apple M3", "RAM": "16GB", "Almacenamiento": "512GB SSD", "Batería": "18 horas" }, pros: ["Rendimiento excepcional", "Batería todo el día", "Ultraligero"], cons: ["Solo 2 puertos", "Precio premium"], bestChoice: true, affiliateUrl: "#" },
+            { id: 5, name: "Dell XPS 13 Plus", category: "laptop", price: 1099, originalPrice: 1299, image: "https://placehold.co/600x400/8e8e93/ffffff?text=Dell+XPS+13", rating: 4.5, reviews: 987, features: { "Pantalla": "13.4\" InfinityEdge", "Procesador": "Intel Core i7", "RAM": "16GB", "Almacenamiento": "512GB SSD", "Batería": "12 horas" }, pros: ["Diseño elegante", "Pantalla increíble", "Teclado táctil"], cons: ["Conectividad limitada", "Ventiladores ruidosos"], bestChoice: false, affiliateUrl: "#" },
+            { id: 6, name: "AirPods Pro 2", category: "headphones", price: 199, originalPrice: 249, image: "https://placehold.co/600x400/d4d4d8/000000?text=AirPods+Pro+2", rating: 4.7, reviews: 5632, features: { "Cancelación": "Activa adaptativa", "Batería": "6h + 24h estuche", "Conectividad": "Bluetooth 5.3", "Audio": "Audio Espacial" }, pros: ["Cancelación excelente", "Sonido inmersivo", "Carga inalámbrica"], cons: ["Solo para iOS", "Precio alto"], bestChoice: true, affiliateUrl: "#" },
+            { id: 7, name: "Sony WH-1000XM5", category: "headphones", price: 299, originalPrice: 399, image: "https://placehold.co/600x400/a3a3a3/ffffff?text=Sony+WH-1000XM5", rating: 4.8, reviews: 2134, features: { "Cancelación": "Líder del mercado", "Batería": "30 horas", "Conectividad": "Bluetooth 5.2", "Audio": "Hi-Res Audio" }, pros: ["Mejor cancelación", "Batería increíble", "Comodidad superior"], cons: ["No se pliegan", "App compleja"], bestChoice: false, affiliateUrl: "#" },
+            { id: 8, name: "Apple Watch Series 9", category: "smartwatch", price: 329, originalPrice: 399, image: "https://placehold.co/600x400/8e8e93/ffffff?text=Apple+Watch+9", rating: 4.6, reviews: 4123, features: { "Pantalla": "45mm Retina", "Procesador": "S9 SiP", "Batería": "18 horas", "Sensores": "ECG, SpO2, Temp" }, pros: ["Ecosistema Apple", "Salud avanzada", "Apps nativas"], cons: ["Solo iOS", "Batería limitada"], bestChoice: true, affiliateUrl: "#" },
+            { id: 9, name: "Microsoft Surface Laptop 5", category: "laptop", price: 999, originalPrice: 1150, image: "https://placehold.co/600x400/a1a1aa/ffffff?text=Surface+Laptop+5", rating: 4.6, reviews: 854, features: { "Pantalla": "13.5\" PixelSense", "Procesador": "Intel Core i5", "RAM": "8GB", "Almacenamiento": "512GB SSD", "Batería": "18 horas" }, pros: ["Diseño premium", "Teclado cómodo", "Pantalla táctil"], cons: ["Pocos puertos", "Rendimiento base"], bestChoice: false, affiliateUrl: "#" },
+            { id: 10, name: "Samsung Galaxy Watch 6", category: "smartwatch", price: 299, originalPrice: 349, image: "https://placehold.co/600x400/a3a3a3/ffffff?text=Galaxy+Watch+6", rating: 4.7, reviews: 3102, features: { "Pantalla": "1.5\" Super AMOLED", "Procesador": "Exynos W930", "Batería": "40 horas", "Sensores": "BioActive, Temp" }, pros: ["Pantalla brillante", "Bisel giratorio virtual", "Buen seguimiento fitness"], cons: ["Batería mejorable", "Requiere móvil Samsung"], bestChoice: false, affiliateUrl: "#" },
+            { id: 11, name: "iPad Pro M4", category: "tablet", price: 999, originalPrice: 999, image: "https://placehold.co/600x400/8e8e93/ffffff?text=iPad+Pro+M4", rating: 4.9, reviews: 1520, features: { "Pantalla": "11\" Ultra Retina XDR", "Procesador": "Apple M4", "Almacenamiento": "256GB", "Cámara": "12MP" }, pros: ["Increíblemente potente", "La mejor pantalla del mercado", "Delgado y ligero"], cons: ["Muy caro", "Accesorios costosos"], bestChoice: true, affiliateUrl: "#" },
+            { id: 12, name: "Nintendo Switch (OLED)", category: "gaming", price: 349, originalPrice: 349, image: "https://placehold.co/600x400/ef4444/ffffff?text=Nintendo+Switch", rating: 4.8, reviews: 12543, features: { "Pantalla": "7\" OLED", "Almacenamiento": "64GB", "Modos": "TV, Sobremesa, Portátil", "Batería": "4.5-9 horas" }, pros: ["Pantalla vibrante", "Catálogo de juegos excelente", "Versátil"], cons: ["Rendimiento 720p portátil", "Joy-Con drift potencial"], bestChoice: true, affiliateUrl: "#" }
+        ];
+        const blogPosts = [
+            { id: 1, title: "iPhone 15 Pro vs Samsung S24 Ultra: ¿Cuál elegir?", excerpt: "Análisis exhaustivo entre los dos flagships más esperados. Cámara, rendimiento, batería y valor.", image: "https://placehold.co/600x400/6366f1/ffffff?text=iPhone+vs+Samsung", date: "15 Jun 2025", readTime: "8 min", tags: ["Smartphones", "Comparativa"] },
+            { id: 2, title: "Los mejores laptops para trabajo remoto en 2025", excerpt: "Guía completa para elegir el laptop perfecto para trabajar desde casa. Opciones para todos los presupuestos.", image: "https://placehold.co/600x400/4f46e5/ffffff?text=Laptops+2025", date: "12 Jun 2025", readTime: "10 min", tags: ["Laptops", "Productividad"] },
+            { id: 3, title: "AirPods Pro 2 vs Sony XM5: Batalla de gigantes", excerpt: "Enfrentamos los auriculares más populares. Cancelación de ruido, calidad de sonido y comodidad.", image: "https://placehold.co/600x400/22c55e/ffffff?text=Audio+Battle", date: "10 Jun 2025", readTime: "6 min", tags: ["Auriculares", "Review"] },
+            { id: 4, title: "Smartwatches 2025: ¿Vale la pena la inversión?", excerpt: "Análisis del mercado actual de smartwatches. Comparamos funciones de salud, batería y ecosistemas.", image: "https://placehold.co/600x400/f97316/ffffff?text=Smartwatches", date: "8 Jun 2025", readTime: "7 min", tags: ["Smartwatch", "Salud"] },
+            { id: 5, title: "Guía Definitiva para Comprar un Tablet en 2025", excerpt: "¿iPad, Android o Windows? Te ayudamos a decidir cuál es el tablet perfecto para tus necesidades, ya sea para trabajar, estudiar o entretenerte.", image: "https://placehold.co/600x400/3b82f6/ffffff?text=Tablets+Guide", date: "20 Jun 2025", readTime: "12 min", tags: ["Tablets", "Guía de Compra"] },
+            { id: 6, title: "Nintendo Switch OLED vs. Steam Deck: ¿Cuál es para ti?", excerpt: "Comparamos las dos consolas portátiles más populares. Potencia vs. Ecosistema, ¿qué es más importante para ti como jugador?", image: "https://placehold.co/600x400/ef4444/ffffff?text=Gaming+Consoles", date: "18 Jun 2025", readTime: "9 min", tags: ["Gaming", "Consolas"] }
+        ];
+        let subscriberCount = 15847;
+        let comparedProducts = [];
+
+        // =================================================================
+        // DOM ELEMENTS
+        // =================================================================
+        const productsGrid = document.getElementById('productsGrid');
+        const blogGrid = document.getElementById('blogGrid');
+        const searchBox = document.getElementById('searchBox');
+        const categoryFilter = document.getElementById('categoryFilter');
+        const sortSelect = document.getElementById('sortSelect');
+        const subscriberCountEl = document.getElementById('subscriberCount');
+        const newsletterForm = document.getElementById('newsletterForm');
+        const emailInput = document.getElementById('emailInput');
+        const subscribeBtn = document.getElementById('subscribeBtn');
+        const mobileMenuBtn = document.getElementById('mobileMenuBtn');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const modalContainer = document.getElementById('modal-container');
+        const notificationContainer = document.getElementById('notification-container');
+
+        // =================================================================
+        // TEMPLATE GENERATORS
+        // =================================================================
+        const createStarRating = (rating) => {
+            let stars = '';
+            for (let i = 1; i <= 5; i++) {
+                if (i <= rating) {
+                    stars += '<i class="fa-solid fa-star text-amber-400"></i>';
+                } else if (i - 0.5 <= rating) {
+                    stars += '<i class="fa-solid fa-star-half-stroke text-amber-400"></i>';
+                } else {
+                    stars += '<i class="fa-regular fa-star text-amber-300"></i>';
+                }
+            }
+            return `<div class="flex items-center gap-1">${stars}</div>`;
+        };
+
+        const createProductCard = (product) => {
+            const discount = Math.round(((product.originalPrice - product.price) / product.originalPrice) * 100);
+            return `
+            <div class="bg-white rounded-xl shadow-md overflow-hidden card-hover-effect flex flex-col" data-id="${product.id}">
+                ${product.bestChoice ? '<div class="absolute top-3 right-3 bg-red-500 text-white text-xs font-bold px-3 py-1 rounded-full z-10">MEJOR OPCIÓN</div>' : ''}
+                <div class="relative h-56 bg-gray-100 flex items-center justify-center p-2">
+                    <img src="${product.image}" alt="${product.name}" class="max-w-full max-h-full object-contain" onerror="this.onerror=null;this.src='https://placehold.co/600x400/cccccc/ffffff?text=Error+al+cargar';">
                 </div>
-                <select class="filter-select" id="categoryFilter" onchange="filterProducts()">
-                    <option value="">Todas las categorías</option>
-                    <option value="smartphone">Smartphones</option>
-                    <option value="laptop">Laptops</option>
-                    <option value="headphones">Auriculares</option>
-                    <option value="smartwatch">Smartwatches</option>
-                </select>
-                <select class="sort-select" id="sortSelect" onchange="sortProducts()">
-                    <option value="name">Ordenar por nombre</option>
-                    <option value="price-low">Precio: menor a mayor</option>
-                    <option value="price-high">Precio: mayor a menor</option>
-                    <option value="rating">Mejor calificación</option>
-                </select>
-            </div>
-
-            <section class="comparison-section fade-in" id="comparison-section">
-                <h2 class="section-title">Comparación de Productos 2025</h2>
-                <div class="comparison-grid" id="productsGrid">
-                    <!-- Los productos se cargan dinámicamente -->
-                </div>
-            </section>
-
-            <section class="blog-section" id="blog-section">
-                <div class="container">
-                    <h2 class="section-title">Últimas Reviews y Noticias</h2>
-                    <div class="blog-grid" id="blogGrid">
-                        <!-- Los artículos se cargan dinámicamente -->
+                <div class="p-5 flex flex-col flex-grow">
+                    <h3 class="text-xl font-bold mb-2 truncate">${product.name}</h3>
+                    <div class="flex items-center justify-between mb-3">
+                        <div class="flex items-baseline gap-2">
+                            <p class="text-2xl font-black text-indigo-600">$${product.price}</p>
+                            ${product.originalPrice > product.price ? `<p class="text-sm text-gray-500 line-through">$${product.originalPrice}</p>` : ''}
+                        </div>
+                        ${product.originalPrice > product.price ? `<div class="bg-red-100 text-red-600 text-xs font-bold px-2 py-1 rounded-md">-${discount}%</div>` : ''}
+                    </div>
+                    <div class="flex items-center gap-2 text-sm text-gray-600 mb-4">
+                        ${createStarRating(product.rating)}
+                        <span>(${product.reviews.toLocaleString()})</span>
+                    </div>
+                    <ul class="text-sm space-y-2 mb-4 border-t border-b py-3">
+                        ${Object.entries(product.features).slice(0, 3).map(([key, value]) => `
+                            <li class="flex justify-between"><span class="font-semibold text-gray-700">${key}</span><span class="text-gray-500">${value}</span></li>
+                        `).join('')}
+                    </ul>
+                    <div class="mt-auto space-y-2">
+                         <button class="w-full bg-indigo-600 text-white px-4 py-2.5 rounded-lg font-semibold hover:bg-indigo-700 transition-all text-sm" onclick="trackPurchase(${product.id})">
+                            <i class="fa-solid fa-cart-shopping mr-2"></i>Ver Mejor Oferta
+                        </button>
+                        <button class="w-full bg-gray-100 text-gray-700 px-4 py-2.5 rounded-lg font-semibold hover:bg-gray-200 transition-all text-sm" onclick="addToComparison(${product.id})">
+                            <i class="fa-solid fa-plus-minus mr-2"></i>Añadir a Comparar
+                        </button>
                     </div>
                 </div>
-            </section>
+            </div>`;
+        };
+        
+        const createAdCard = () => {
+            const adContainer = document.createElement('div');
+            adContainer.className = 'bg-white rounded-xl shadow-md overflow-hidden card-hover-effect flex flex-col p-5 justify-center items-center text-center';
+            
+            const adScript = document.createElement('script');
+            adScript.type = 'text/javascript';
+            adScript.innerHTML = `
+                atOptions = {
+                    'key' : '6d8c30dd46a8bf54339111cf0646a794',
+                    'format' : 'iframe',
+                    'height' : 250,
+                    'width' : 300,
+                    'params' : {}
+                };
+            `;
 
-            <section class="newsletter" id="newsletter">
-                <div class="container">
-                    <h3>🔥 No te pierdas las mejores ofertas</h3>
-                    <p>Únete a nuestra comunidad de compradores inteligentes</p>
-                    <div class="newsletter-stats">
-                        <div class="stat">
-                            <div class="stat-number" id="subscriberCount">15,847</div>
-                            <div class="stat-label">Suscriptores</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-number">92%</div>
-                            <div class="stat-label">Satisfacción</div>
-                        </div>
-                        <div class="stat">
-                            <div class="stat-number">$2.3M</div>
-                            <div class="stat-label">Ahorrado</div>
-                        </div>
+            const adInvokeScript = document.createElement('script');
+            adInvokeScript.type = 'text/javascript';
+            adInvokeScript.src = '//www.highperformanceformat.com/6d8c30dd46a8bf54339111cf0646a794/invoke.js';
+
+            adContainer.appendChild(adScript);
+            adContainer.appendChild(adInvokeScript);
+
+            return adContainer.outerHTML;
+        };
+
+        const createBlogCard = (post) => {
+            return `
+            <article class="bg-white rounded-xl shadow-md overflow-hidden card-hover-effect cursor-pointer" onclick="openBlogPost(${post.id})">
+                <img src="${post.image}" alt="${post.title}" class="w-full h-48 object-cover">
+                <div class="p-5">
+                    <p class="text-sm text-gray-500 mb-2">${post.date} • ${post.readTime} de lectura</p>
+                    <h3 class="text-lg font-bold mb-3 hover:text-indigo-600 transition-colors">${post.title}</h3>
+                    <p class="text-gray-600 text-sm mb-4">${post.excerpt}</p>
+                    <div class="flex gap-2 flex-wrap">
+                        ${post.tags.map(tag => `<span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full">${tag}</span>`).join('')}
                     </div>
-                    <form class="newsletter-form" onsubmit="handleNewsletter(event)">
-                        <input type="email" class="newsletter-input" placeholder="tu@email.com" required id="emailInput">
-                        <button type="submit" class="newsletter-button" id="subscribeBtn">Suscribirme</button>
-                    </form>
-                    <div class="success-message" id="success
+                </div>
+            </article>`;
+        };
+
+        // =================================================================
+        // RENDER FUNCTIONS
+        // =================================================================
+        const renderProducts = () => {
+            const searchTerm = searchBox.value.toLowerCase();
+            const category = categoryFilter.value;
+            const sortBy = sortSelect.value;
+
+            let filteredProducts = products.filter(p => {
+                const matchesSearch = p.name.toLowerCase().includes(searchTerm);
+                const matchesCategory = !category || p.category === category;
+                return matchesSearch && matchesCategory;
+            });
+
+            filteredProducts.sort((a, b) => {
+                switch(sortBy) {
+                    case 'price-low': return a.price - b.price;
+                    case 'price-high': return b.price - a.price;
+                    case 'rating': return b.rating - a.rating;
+                    case 'name':
+                    default: return a.name.localeCompare(b.name);
+                }
+            });
+            
+            productsGrid.innerHTML = '';
+            filteredProducts.forEach((product, index) => {
+                productsGrid.innerHTML += createProductCard(product);
+                // Insertar un anuncio cada 4 productos
+                if ((index + 1) % 4 === 0 && index < filteredProducts.length -1) {
+                    productsGrid.innerHTML += createAdCard();
+                }
+            });
+        };
+
+        const renderBlogPosts = () => {
+            blogGrid.innerHTML = blogPosts.map(createBlogCard).join('');
+        };
+
+        // =================================================================
+        // UI & UX (MODALS, NOTIFICATIONS)
+        // =================================================================
+        const showNotification = (message, type = 'info', duration = 3000) => {
+            const icons = {
+                info: 'fa-circle-info',
+                success: 'fa-check-circle',
+                warning: 'fa-triangle-exclamation',
+                error: 'fa-circle-xmark'
+            };
+            const colors = {
+                info: 'bg-blue-500',
+                success: 'bg-green-500',
+                warning: 'bg-yellow-500',
+                error: 'bg-red-500'
+            };
+
+            const toast = document.createElement('div');
+            toast.className = `flex items-center gap-4 ${colors[type]} text-white text-sm font-semibold px-4 py-3 rounded-lg shadow-2xl animate-slideInUp`;
+            toast.innerHTML = `
+                <i class="fa-solid ${icons[type]} text-xl"></i>
+                <p>${message}</p>
+            `;
+            notificationContainer.appendChild(toast);
+            setTimeout(() => {
+                toast.classList.add('toast-out');
+                toast.addEventListener('animationend', () => toast.remove());
+            }, duration);
+        };
+        
+        window.closeModal = () => {
+            const backdrop = modalContainer.querySelector('.modal-backdrop');
+            if (backdrop) {
+                backdrop.classList.add('animate-[fadeOut_0.2s_ease-out_forwards]');
+                backdrop.firstElementChild.classList.add('animate-[slideOutDown_0.3s_ease-out_forwards]');
+                backdrop.addEventListener('animationend', () => {
+                    modalContainer.innerHTML = '';
+                    modalContainer.classList.add('hidden');
+                    document.body.style.overflow = 'auto';
+                }, { once: true });
+            }
+        };
+
+        const showModal = (title, contentHTML) => {
+            modalContainer.innerHTML = `
+                <div class="modal-backdrop fixed inset-0 bg-black/60 flex items-center justify-center">
+                    <div class="modal-content bg-white rounded-2xl shadow-2xl w-full max-w-2xl max-h-[90vh] flex flex-col">
+                        <header class="flex items-center justify-between p-5 border-b">
+                            <h3 class="text-xl font-bold">${title}</h3>
+                            <button class="close-modal-btn text-2xl text-gray-500 hover:text-gray-800 transition-colors">&times;</button>
+                        </header>
+                        <main class="p-5 overflow-y-auto">
+                            ${contentHTML}
+                        </main>
+                    </div>
+                </div>
+            `;
+            modalContainer.classList.remove('hidden');
+            document.body.style.overflow = 'hidden';
+
+            modalContainer.querySelector('.modal-backdrop').addEventListener('click', (e) => {
+                if (e.target === e.currentTarget) window.closeModal();
+            });
+            modalContainer.querySelectorAll('.close-modal-btn').forEach(btn => btn.addEventListener('click', window.closeModal));
+        };
+        
+        window.showInfoModal = (type) => {
+            const info = {
+                about: { title: 'Acerca de TechCompare Pro', content: 'Somos la plataforma líder en comparaciones de tecnología, dedicados a ofrecerte análisis claros y honestos para que tomes la mejor decisión de compra. Nuestra misión es simplificar el complejo mundo de la tecnología.'},
+                methodology: { title: 'Nuestra Metodología', content: 'Combinamos análisis de expertos, pruebas de rendimiento rigurosas, y la agregación de miles de opiniones de usuarios para darte una puntuación final objetiva. No aceptamos pagos por alterar nuestros resultados.'},
+                contact: { title: 'Contacto', content: '¿Tienes preguntas o sugerencias? <br><b>Email:</b> info@techcomparepro.com<br><b>Teléfono:</b> +1 (555) 123-4567'},
+                privacy: { title: 'Política de Privacidad', content: 'Tu privacidad es nuestra prioridad. No vendemos tus datos. Usamos cookies para mejorar tu experiencia en el sitio. Cumplimos con todas las regulaciones de protección de datos vigentes.'},
+                terms: { title: 'Términos de Uso', content: 'Al usar nuestro sitio, aceptas nuestros términos. La información proporcionada es para fines informativos y no garantizamos la exactitud total de los precios o especificaciones, ya que pueden cambiar.'},
+                affiliates: { title: 'Divulgación de Afiliados', content: 'Para mantener nuestro sitio gratuito, usamos enlaces de afiliados. Esto significa que si compras a través de nuestros enlaces, podemos recibir una pequeña comisión sin costo adicional para ti. ¡Gracias por tu apoyo!'}
+            };
+            const data = info[type];
+            if (data) showModal(data.title, `<p class="text-gray-600 leading-relaxed">${data.content}</p>`);
+        };
+
+        // =================================================================
+        // EVENT HANDLERS & LOGIC
+        // =================================================================
+        
+        // Mobile Menu Toggle
+        mobileMenuBtn.addEventListener('click', () => mobileMenu.classList.toggle('hidden'));
+        mobileMenu.addEventListener('click', () => mobileMenu.classList.add('hidden'));
+
+        // Filtering and Sorting
+        [searchBox, categoryFilter, sortSelect].forEach(el => {
+            el.addEventListener('input', renderProducts);
+            el.addEventListener('change', renderProducts);
+        });
+
+        // Newsletter
+        newsletterForm.addEventListener('submit', (e) => {
+            e.preventDefault();
+            const email = emailInput.value;
+            if (email) {
+                subscribeBtn.disabled = true;
+                subscribeBtn.innerHTML = '<i class="fa-solid fa-spinner fa-spin"></i>';
+                setTimeout(() => {
+                    emailInput.value = '';
+                    subscriberCount++;
+                    subscriberCountEl.textContent = subscriberCount.toLocaleString();
+                    showNotification(`¡Gracias por suscribirte, ${email}!`, 'success');
+                    subscribeBtn.disabled = false;
+                    subscribeBtn.textContent = 'Suscribirme Ahora';
+                }, 1500);
+            }
+        });
+        
+        // Ad clicks
+        window.trackAdClick = (adLocation) => {
+            console.log(`Ad click tracked: ${adLocation}`);
+            showModal('Oportunidad de Publicidad', `
+                <p class="mb-4">Has hecho clic en un espacio publicitario. ¡Es una gran oportunidad para tu marca!</p>
+                <div class="bg-indigo-50 border-l-4 border-indigo-500 p-4 rounded-r-lg">
+                    <h4 class="font-bold">¿Por qué anunciarte con nosotros?</h4>
+                    <ul class="list-disc list-inside mt-2 text-sm text-gray-700">
+                        <li>Llega a miles de compradores de tecnología.</li>
+                        <li>CTR promedio del 2.5%.</li>
+                        <li>Planes flexibles y asequibles.</li>
+                    </ul>
+                    <p class="mt-4 font-semibold">Contacta a <a href="mailto:ads@techcomparepro.com" class="text-indigo-600">ads@techcomparepro.com</a> para más información.</p>
+                </div>
+            `);
+        };
+
+        // Purchase tracking
+        window.trackPurchase = (productId) => {
+            const product = products.find(p => p.id === productId);
+            console.log(`Purchase tracking for: ${product.name}`);
+            showModal('Redirigiendo a la tienda', `
+                <p class="mb-4">Estás a punto de ser redirigido a uno de nuestros socios de confianza para ver la mejor oferta para el <strong>${product.name}</strong>.</p>
+                <div class="text-center">
+                    <a href="${product.affiliateUrl}" target="_blank" class="inline-block bg-green-500 text-white px-8 py-3 rounded-full font-bold hover:bg-green-600 transition-all shadow-lg hover:shadow-xl transform hover:-translate-y-1" onclick="window.closeModal()">
+                        Continuar a la Oferta
+                    </a>
+                </div>
+                <p class="text-xs text-center mt-4 text-gray-500">Al continuar, TechCompare Pro podría recibir una comisión.</p>
+            `);
+        };
+        
+        // Comparison logic
+        window.addToComparison = (productId) => {
+            if (comparedProducts.find(p => p.id === productId)) {
+                showNotification('Este producto ya está en la comparación.', 'warning');
+                return;
+            }
+            if (comparedProducts.length >= 3) {
+                showNotification('Puedes comparar un máximo de 3 productos.', 'warning');
+                return;
+            }
+            const product = products.find(p => p.id === productId);
+            comparedProducts.push(product);
+            showNotification(`${product.name} añadido para comparar.`, 'success');
+            
+            if (comparedProducts.length >= 2) {
+                showComparisonModal();
+            }
+        };
+
+        const showComparisonModal = () => {
+            if (comparedProducts.length < 2) {
+                showNotification('Necesitas al menos 2 productos para comparar.', 'info');
+                return;
+            }
+            
+            const allFeatures = new Set(comparedProducts.flatMap(p => Object.keys(p.features)));
+            
+            let tableHTML = `
+            <div class="overflow-x-auto">
+                <table class="w-full text-sm text-left">
+                    <thead class="bg-gray-100">
+                        <tr>
+                            <th class="p-3 font-semibold">Característica</th>
+                            ${comparedProducts.map(p => `<th class="p-3 font-semibold">${p.name}</th>`).join('')}
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <tr class="border-b"><td class="p-3 font-bold">Precio</td>${comparedProducts.map(p => `<td class="p-3 font-bold text-indigo-600">$${p.price}</td>`).join('')}</tr>
+                        <tr class="border-b"><td class="p-3 font-bold">Rating</td>${comparedProducts.map(p => `<td class="p-3">${createStarRating(p.rating)}</td>`).join('')}</tr>
+                        ${Array.from(allFeatures).map(feature => `
+                            <tr class="border-b">
+                                <td class="p-3 font-semibold">${feature}</td>
+                                ${comparedProducts.map(p => `<td class="p-3">${p.features[feature] || 'N/A'}</td>`).join('')}
+                            </tr>
+                        `).join('')}
+                    </tbody>
+                </table>
+            </div>
+            <div class="mt-6 flex justify-end gap-3">
+                <button id="clearComparisonBtn" class="bg-red-500 text-white px-4 py-2 rounded-lg font-semibold hover:bg-red-600 transition">Limpiar</button>
+                <button class="close-modal-btn bg-gray-200 text-gray-800 px-4 py-2 rounded-lg font-semibold hover:bg-gray-300 transition">Cerrar</button>
+            </div>
+            `;
+            showModal('Comparación Detallada', tableHTML);
+            document.getElementById('clearComparisonBtn').addEventListener('click', () => {
+                comparedProducts = [];
+                window.closeModal();
+                showNotification('Comparación limpiada.', 'info');
+            });
+        };
+
+        // Blog post modal
+        window.openBlogPost = (postId) => {
+            const post = blogPosts.find(p => p.id === postId);
+            showModal(post.title, `
+                <img src="${post.image}" alt="${post.title}" class="w-full h-64 object-cover rounded-lg mb-4">
+                <p class="text-sm text-gray-500 mb-4">${post.date} • ${post.readTime} de lectura</p>
+                <p class="text-gray-700 leading-relaxed">${post.excerpt} En un sitio real, aquí se mostraría el contenido completo del artículo del blog.</p>
+                <div class="mt-4 flex gap-2 flex-wrap">
+                    ${post.tags.map(tag => `<span class="bg-indigo-100 text-indigo-700 text-xs font-semibold px-2.5 py-1 rounded-full">${tag}</span>`).join('')}
+                </div>
+            `);
+        };
+        
+        window.filterByCategory = (category) => {
+            categoryFilter.value = category;
+            renderProducts();
+            document.getElementById('comparison-section').scrollIntoView();
+        };
+
+        // =================================================================
+        // INITIALIZATION
+        // =================================================================
+        const init = () => {
+            console.log('🚀 TechCompare Pro Initialized');
+            renderProducts();
+            renderBlogPosts();
+            subscriberCountEl.textContent = subscriberCount.toLocaleString();
+            showNotification('¡Bienvenido a TechCompare Pro!', 'info');
+        };
+
+        init();
+    });
+    </script>
+    
+    <!-- Additional Ad Scripts -->
+    <script type='text/javascript' src='//pl27083142.profitableratecpm.com/ed/53/7e/ed537ee87141fb4508dfd6bae7cf3097.js'></script>
+
+</body>
+</html>
